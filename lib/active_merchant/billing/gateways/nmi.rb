@@ -49,6 +49,7 @@ module ActiveMerchant #:nodoc:
         add_vendor_data(post, options)
         add_merchant_defined_fields(post, options)
         add_level3_fields(post, options)
+        add_threeds_fields(post, options)
 
         commit('auth', post)
       end
@@ -139,6 +140,16 @@ module ActiveMerchant #:nodoc:
 
       def add_level3_fields(post, options)
         add_fields_to_post_if_present(post, options, [:tax, :shipping, :ponumber])
+      end
+
+      def add_threeds_fields(post, options)
+        if options[:eci].present? && options[:cardholder_auth].present? && options[:cavv].present? && options[:xid].present? && options[:three_ds_version].present?
+          post[:eci] = options[:eci]
+          post[:cardholder_auth] = options[:cardholder_auth]
+          post[:cavv] = options[:cavv]
+          post[:xid] = options[:xid]
+          post[:three_ds_version] = options[:three_ds_version]
+        end
       end
 
       def add_invoice(post, money, options)
